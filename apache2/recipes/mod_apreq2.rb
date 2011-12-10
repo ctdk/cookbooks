@@ -34,12 +34,12 @@ case node[:platform]
     # link to mod_apreq.so.
     link "/usr/lib64/httpd/modules/mod_apreq.so" do
       to "/usr/lib64/httpd/modules/mod_apreq2.so"
-    #  only_if "test -f /usr/lib64/httpd/modules/mod_apreq2.so"
+      only_if "test -f /usr/lib64/httpd/modules/mod_apreq2.so"
     end
-    #link "/usr/lib/httpd/modules/mod_apreq.so" do
-    #  to "/usr/lib/httpd/modules/mod_apreq2.so"
-    #  only_if "test -f /usr/lib/httpd/modules/mod_apreq2.so"
-    #end
+    link "/usr/lib/httpd/modules/mod_apreq.so" do
+      to "/usr/lib/httpd/modules/mod_apreq2.so"
+      only_if "test -f /usr/lib/httpd/modules/mod_apreq2.so"
+    end
 end
 
 apache_module "apreq"
