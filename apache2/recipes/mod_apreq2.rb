@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: apache2
-# Recipe:: apreq
+# Recipe:: apreq2
 #
 # modified from the python recipe by Jeremy Bingham
 #
