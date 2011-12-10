@@ -31,4 +31,4 @@ case node[:platform]
     end
 end
 
-apache_module "apreq"
+apache_module "apreq2"
