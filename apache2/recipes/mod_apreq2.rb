@@ -29,6 +29,17 @@ case node[:platform]
       action :install
       notifies :run, resources(:execute => "generate-module-list"), :immediately
     end
+    # seems that the apreq lib is weirdly broken or something - it needs to be
+    # loaded as "apreq", but on RHEL & derivitatives the file needs a symbolic
+    # link to mod_apreq.so.
+    link "/usr/lib64/httpd/modules/mod_apreq.so"
+      to "/usr/lib64/httpd/modules/mod_apreq2.so"
+      only_if "test -f /usr/lib64/httpd/modules/mod_apreq2.so"
+    end
+    link "/usr/lib/httpd/modules/mod_apreq.so"
+      to "/usr/lib/httpd/modules/mod_apreq2.so"
+      only_if "test -f /usr/lib/httpd/modules/mod_apreq2.so"
+    end
 end
 
-apache_module "apreq2"
+apache_module "apreq"
