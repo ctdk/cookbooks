@@ -95,15 +95,17 @@ table_open_cache	= <%= node['mysql']['tunable']['table_open_cache'] %>
 max_allowed_packet	= <%= node['mysql']['tunable']['max_allowed_packet'] %>
 read_buffer_size	= <%= node['mysql']['tunable']['read_buffer_size'] %>
 sort_buffer_size	= <%= node['mysql']['tunable']['sort_buffer_size'] %>
+<% if node['mysql']['tunable']['join_buffer_size'] %>
 join_buffer_size	= <%= node['mysql']['tunable']['join_buffer_size'] %>
-thread_concurrency	= <%= node['mysql']['tunable']['thread_concurrency'] %>
-ft_min_word_len		= <%= node['mysql']['tunable']['ft_min_word_len'] %>
+<% end %>
 
 <% if node['mysql']['tunable']['memlock'] %>
 memlock 
 <% end %>
 transaction_isolation	= <%= node['mysql']['tunable']['transaction_isolation'] %>
+<% if node['mysql']['tunable']['tmp_table_size'] %>
 tmp_table_size		= <%= node['mysql']['tunable']['tmp_table_size'] %>
+<% end %>
 
 #
 # * Query Cache Configuration
@@ -186,9 +188,6 @@ innodb_data_file_path = ibdata1:10M:autoextend
 <% if node['mysql']['tunable']['innodb']['innodb_data_home_dir'] %>
 innodb_data_home_dir = <%= node['mysql']['tunable']['innodb']['innodb_data_home_dir'] %>
 <% end %>
-# Only useful in Windows, which this cookbook may or may not support.
-innodb_write_io_threads = <%= node['mysql']['tunable']['innodb']['innodb_write_io_threads'] %>
-innodb_read_io_threads = <%= node['mysql']['tunable']['innodb']['innodb_read_io_threads'] %>
 
 # add this to the file, anyway
 # If you run into InnoDB tablespace corruption, setting this to a nonzero
@@ -241,7 +240,7 @@ max_allowed_packet      = <%= node['mysql']['tunable']['max_allowed_packet'] %>
 
 [mysql]
 #no-auto-rehash # faster start of mysql but no tab completition
-default-character-set	=
+default-character-set	= <%= node['mysql']['default_character_set'] %>
 
 [isamchk]
 key_buffer              = <%= node['mysql']['tunable']['max_allowed_packet'] %>

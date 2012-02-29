@@ -50,6 +50,16 @@ attribute "mysql/tunable",
   :description => "Hash of MySQL tunable attributes",
   :type => "hash"
 
+attribute "mysql/tunable/myisam",
+  :display_name => "MySQL MyISAM Tunables",
+  :description => "Hash of MySQL tunable attributes specific to MyISAM",
+  :type => "hash"
+
+attribute "mysql/tunable/innodb",
+  :display_name => "MySQL InnoDB Tunables",
+  :description => "Hash of MySQL tunable attributes specific to InnoDB",
+  :type => "hash"
+
 attribute "mysql/tunable/key_buffer",
   :display_name => "MySQL Tuntable Key Buffer",
   :default => "250M"
@@ -93,3 +103,8 @@ attribute "mysql/tunable/expire_logs_days",
 attribute "mysql/tunable/max_binlog_size",
   :display_name => "MySQL Max Binlog Size",
   :default => "100M"
+
+attribute "mysql/xtrabackup",
+  :display_name => "XtraBackup",
+  :description => "Hash of options for XtraBackup from Percona",
+  :type => "hash"
