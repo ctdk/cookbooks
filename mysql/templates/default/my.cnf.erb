@@ -90,20 +90,20 @@ table_cache             = <%= node['mysql']['tunable']['table_cache'] %>
 max_heap_table_size     = <%= node['mysql']['tunable']['max_heap_table_size'] %>
 connect_timeout		= <%= node['mysql']['tunable']['connect_timeout'] %>
 max_connect_errors	= <%= node['mysql']['tunable']['max_connect_errors'] %>
-binlog_cache_size	= 
-table_open_cache	= 
-max_allowed_packet	=
-read_buffer_size	= 
-sort_buffer_size	=
-join_buffer_size	=
-thread_concurrency	=
-ft_min_word_len		=
+binlog_cache_size	= <%= node['mysql']['tunable']['binlog_cache_size'] %>
+table_open_cache	= <%= node['mysql']['tunable']['table_open_cache'] %>
+max_allowed_packet	= <%= node['mysql']['tunable']['max_allowed_packet'] %>
+read_buffer_size	= <%= node['mysql']['tunable']['read_buffer_size'] %>
+sort_buffer_size	= <%= node['mysql']['tunable']['sort_buffer_size'] %>
+join_buffer_size	= <%= node['mysql']['tunable']['join_buffer_size'] %>
+thread_concurrency	= <%= node['mysql']['tunable']['thread_concurrency'] %>
+ft_min_word_len		= <%= node['mysql']['tunable']['ft_min_word_len'] %>
 
 <% if node['mysql']['tunable']['memlock'] %>
 memlock 
 <% end %>
-transaction_isolation	=
-tmp_table_size		=
+transaction_isolation	= <%= node['mysql']['tunable']['transaction_isolation'] %>
+tmp_table_size		= <%= node['mysql']['tunable']['tmp_table_size'] %>
 
 #
 # * Query Cache Configuration
@@ -128,9 +128,9 @@ log-queries-not-using-indexes
 # note: if you are setting up a replication slave, see README.Debian about
 #       other settings you may need to change.
 
-server-id		=
-log_bin			=
-binlog_format		=
+server-id		= <%= node['mysql']['tunable']['server_id'] %>
+log_bin			= <%= node['mysql']['tunable']['log_bin'] %>
+binlog_format		= <%= node['mysql']['tunable']['binlog_format'] %>
 
 expire_logs_days        = <%= node['mysql']['tunable']['expire_logs_days'] %>
 max_binlog_size         = <%= node['mysql']['tunable']['max_binlog_size'] %>
@@ -156,11 +156,11 @@ slow_query_log
 
 # MyISAM
 <% if node['mysql']['tunable']['myisam_options'] %>
-key_buffer_size		  =
-bulk_insert_buffer_size	  =
-myisam_sort_buffer_size	  = 
-myisam_max_sort_file_size =
-myisam_repair_threads	  =
+key_buffer_size		  = <%= node['mysql']['tunable']['myisam']['key_buffer_size'] %>
+bulk_insert_buffer_size	  = <%= node['mysql']['tunable']['myisam']['bulk_insert_buffer_size'] %>
+myisam_sort_buffer_size	  = <%= node['mysql']['tunable']['myisam']['myisam_sort_buffer_size'] %>
+myisam_max_sort_file_size = <%= node['mysql']['tunable']['myisam']['myisam_max_sort_file_size'] %>
+myisam_repair_threads	  = <%= node['mysql']['tunable']['myisam']['myisam_repair_threads'] %>
 <% end %>
 
 #
@@ -174,17 +174,21 @@ innodb_buffer_pool_size = <%= node['mysql']['tunable']['innodb_buffer_pool_size'
 
 <% if node['mysql']['tunable']['innodb_options'] %>
 
-innodb_buffer_pool_instances = 10
-innodb_buffer_pool_size = 22576M
-innodb_additional_mem_pool_size = 240M
+innodb_buffer_pool_instances = <%= node['mysql']['tunable']['innodb']['innodb_buffer_pool_instances'] %>
+innodb_additional_mem_pool_size = <%= node['mysql']['tunable']['innodb']['innodb_additional_mem_pool_size'] %>
 
-innodb_data_file_path = ibdata1:10M:autoextend
--OR-
+<% if node['mysql']['tunable']['innodb']['innodb_file_per_table'] %>
 innodb_file_per_table
+<% else %>
+innodb_data_file_path = ibdata1:10M:autoextend
+<% end %>
 
-innodb_data_home_dir 
-innodb_write_io_threads = 8
-innodb_read_io_threads = 8
+<% if node['mysql']['tunable']['innodb']['innodb_data_home_dir'] %>
+innodb_data_home_dir = <%= node['mysql']['tunable']['innodb']['innodb_data_home_dir'] %>
+<% end %>
+# Only useful in Windows, which this cookbook may or may not support.
+innodb_write_io_threads = <%= node['mysql']['tunable']['innodb']['innodb_write_io_threads'] %>
+innodb_read_io_threads = <%= node['mysql']['tunable']['innodb']['innodb_read_io_threads'] %>
 
 # add this to the file, anyway
 # If you run into InnoDB tablespace corruption, setting this to a nonzero
@@ -192,20 +196,20 @@ innodb_read_io_threads = 8
 # increase it until you're able to dump the table successfully.
 #innodb_force_recovery=1
 
-innodb_thread_concurrency	=
+innodb_thread_concurrency	= <%= node['mysql']['tunable']['innodb']['innodb_thread_concurrency'] %>
 <% if node['mysql']['tunable']['innodb']['innodb_fast_shutdown'] %>
 innodb_fast_shutdown
 <% end %>
-innodb_log_buffer_size		=
-innodb_log_file_size		=
-innodb_log_files_in_group	=
-innodb_log_group_home_dir	=
-innodb_max_dirty_pages_pct	= 
-innodb_flush_method		=
-innodb_lock_wait_timeout	=
-innodb_flush_log_at_trx_commit	= 
-innodb_support_xa		= 
-innodb_file_format		=
+innodb_log_buffer_size		= <%= node['mysql']['tunable']['innodb']['innodb_log_buffer_size'] %>
+innodb_log_file_size		= <%= node['mysql']['tunable']['innodb']['innodb_log_file_size'] %>
+innodb_log_files_in_group	= <%= node['mysql']['tunable']['innodb']['innodb_log_files_in_group'] %>
+innodb_log_group_home_dir	= <%= node['mysql']['tunable']['innodb']['innodb_log_group_home_dir'] %>
+innodb_max_dirty_pages_pct	= <%= node['mysql']['tunable']['innodb']['innodb_max_dirty_pages_pct'] %>
+innodb_flush_method		= <%= node['mysql']['tunable']['innodb']['innodb_flush_method'] %>
+innodb_lock_wait_timeout	= <%= node['mysql']['tunable']['innodb']['innodb_lock_wait_timeout'] %>
+innodb_flush_log_at_trx_commit	= <%= node['mysql']['tunable']['innodb']['innodb_flush_log_at_trx_commit'] %>
+innodb_support_xa		= <%= node['mysql']['tunable']['innodb']['innodb_support_xa'] %>
+innodb_file_format		= <%= node['mysql']['tunable']['innodb']['innodb_file_format'] %>
 
 <% end %>
 
