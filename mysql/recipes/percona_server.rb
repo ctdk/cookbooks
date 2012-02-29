@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: mysql
-# Recipe:: server
+# Recipe:: percona_server
 #
 # Copyright 2008-2011, Opscode, Inc.
 #
@@ -19,9 +19,9 @@
 
 ::Chef::Recipe.send(:include, Opscode::OpenSSL::Password)
 
-include_recipe "mysql::client"
+include_recipe "mysql::percona_client"
 include_attribute "general"
-include_attribute "server"
+include_attribute "percona_server"
 
 # generate all passwords
 node.set_unless['mysql']['server_debian_password'] = secure_password
