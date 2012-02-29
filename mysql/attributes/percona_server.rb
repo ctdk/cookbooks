@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: mysql
-# Attributes:: server
+# Attributes:: percona_server
 #
 # Copyright 2008-2009, Opscode, Inc.
 #
@@ -19,7 +19,7 @@
 
 case node["platform"]
 when "centos", "redhat", "fedora", "suse", "scientific", "amazon"
-  default['mysql']['package_name']            = "mysql-server"
+  default['mysql']['package_name']            = "Percona-Server-server-55"
   default['mysql']['service_name']            = "mysqld"
   default['mysql']['basedir']                 = "/usr"
   default['mysql']['lc_messages_dir']	      = "/usr/share/mysql"
@@ -33,23 +33,8 @@ when "centos", "redhat", "fedora", "suse", "scientific", "amazon"
   set['mysql']['pid_file']                    = "/var/run/mysqld/mysqld.pid"
   set['mysql']['old_passwords']               = 1
   set['mysql']['grants_path']                 = "/etc/mysql_grants.sql"
-when "freebsd"
-  default['mysql']['package_name']            = "mysql55-server"
-  default['mysql']['service_name']            = "mysql-server"
-  default['mysql']['basedir']                 = "/usr/local"
-  default['mysql']['lc_messages_dir']	      = "/usr/local/share/mysql"
-  default['mysql']['data_dir']                = "/var/db/mysql"
-  default['mysql']['root_group']              = "wheel"
-  default['mysql']['mysqladmin_bin']          = "/usr/local/bin/mysqladmin"
-  default['mysql']['mysql_bin']               = "/usr/local/bin/mysql"
-
-  set['mysql']['conf_dir']                    = '/usr/local/etc'
-  set['mysql']['socket']                      = "/tmp/mysqld.sock"
-  set['mysql']['pid_file']                    = "/var/run/mysqld/mysqld.pid"
-  set['mysql']['old_passwords']               = 0
-  set['mysql']['grants_path']                 = "/var/db/mysql/grants.sql"
 else
-  default['mysql']['package_name']            = "mysql-server"
+  default['mysql']['package_name']            = "percona-server-server-5.5"
   default['mysql']['service_name']            = "mysql"
   default['mysql']['basedir']                 = "/usr"
   default['mysql']['lc_messages_dir']	      = "/usr/share/mysql"
