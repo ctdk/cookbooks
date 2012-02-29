@@ -21,7 +21,7 @@
 # escpecially if they contain "#" chars...
 # Remember to edit /etc/mysql/debian.cnf when changing the socket location.
 [client]
-port            = 3306
+port            = <%= node['mysql']['port'] %>
 socket          = <%= node['mysql']['socket'] %>
 
 # Here is entries for some specific programs
@@ -30,7 +30,7 @@ socket          = <%= node['mysql']['socket'] %>
 # This was formally known as [safe_mysqld]. Both versions are currently parsed.
 [mysqld_safe]
 socket          = <%= node['mysql']['socket'] %>
-nice            = 0
+nice            = <%= node['mysql']['nice'] %>
 
 [mysqld]
 #
@@ -46,11 +46,22 @@ nice            = 0
 user            = mysql
 pid-file        = <%= node['mysql']['pid_file'] %>
 socket          = <%= node['mysql']['socket'] %>
-port            = 3306
+port            = <%= node['mysql']['port'] %>
 basedir         = <%= node['mysql']['basedir'] %>
 datadir         = <%= node['mysql']['data_dir'] %>
-tmpdir          = /tmp
+tmpdir          = <%= node['mysql']['tmpdir'] %>
 skip-external-locking
+lc-messages-dir = <%= node['mysql']['lc_messages_dir'] %>
+lc-messages	= <%= node['mysql']['lc_messages'] %>
+character-set-server  = <%= node['mysql']['character_set_server'] %>
+character-set-client  = <%= node['mysql']['character_set_client'] %>
+collation_server    = <%= node['mysql']['collation_server'] %>
+default_storage_engine = <%= node['mysql']['default_storage_engine'] %>
+<%# NB: You need to have HugeTLB configured for this option %>
+<% if node['mysql']['large_pages'] %>
+large-pages
+<% end %>
+
 #
 # Instead of skip-networking the default is now to listen only on
 # localhost which is more compatible and is not less secure.
@@ -58,9 +69,11 @@ bind-address            = <%= node['mysql']['bind_address'] %>
 #
 # * Fine Tuning
 #
+
 key_buffer              = <%= node['mysql']['tunable']['key_buffer'] %>
 max_allowed_packet      = <%= node['mysql']['tunable']['max_allowed_packet'] %>
 thread_stack            = <%= node['mysql']['tunable']['thread_stack'] %>
+thread_cache	        = <%= node['mysql']['tunable']['thread_cache'] %>
 thread_cache_size       = <%= node['mysql']['tunable']['thread_cache_size'] %>
 # This replaces the startup script and checks MyISAM tables if needed
 # the first time they are touched
@@ -75,6 +88,22 @@ net_write_timeout       = <%= node['mysql']['tunable']['net_write_timeout'] %>
 back_log                = <%= node['mysql']['tunable']['back_log'] %>
 table_cache             = <%= node['mysql']['tunable']['table_cache'] %>
 max_heap_table_size     = <%= node['mysql']['tunable']['max_heap_table_size'] %>
+connect_timeout		= <%= node['mysql']['tunable']['connect_timeout'] %>
+max_connect_errors	= <%= node['mysql']['tunable']['max_connect_errors'] %>
+binlog_cache_size	= 
+table_open_cache	= 
+max_allowed_packet	=
+read_buffer_size	= 
+sort_buffer_size	=
+join_buffer_size	=
+thread_concurrency	=
+ft_min_word_len		=
+
+<% if node['mysql']['tunable']['memlock'] %>
+memlock 
+<% end %>
+transaction_isolation	=
+tmp_table_size		=
 
 #
 # * Query Cache Configuration
@@ -98,12 +127,42 @@ log-queries-not-using-indexes
 # The following can be used as easy to replay backup logs or for replication.
 # note: if you are setting up a replication slave, see README.Debian about
 #       other settings you may need to change.
-#server-id              = 1
-#log_bin                        = /var/log/mysql/mysql-bin.log
+
+server-id		=
+log_bin			=
+binlog_format		=
+
 expire_logs_days        = <%= node['mysql']['tunable']['expire_logs_days'] %>
 max_binlog_size         = <%= node['mysql']['tunable']['max_binlog_size'] %>
+
+<% if node['mysql']['tunable']['log_slave_updates'] %>
+log_slave_updates
+<% end %>
+
+<% if node['mysql']['tunable']['log'] %>
+log
+<% end %>
+
+<% if node['mysql']['tunable']['log_warnings'] %>
+log_warnings
+<% end %>
+
+<% if node['mysql']['tunable']['slow_query_log'] || node['mysql']['tunable']['log_slow_queries'] %>
+slow_query_log
+<% end %>
+
 #binlog_do_db           = include_database_name
 #binlog_ignore_db       = include_database_name
+
+# MyISAM
+<% if node['mysql']['tunable']['myisam_options'] %>
+key_buffer_size		  =
+bulk_insert_buffer_size	  =
+myisam_sort_buffer_size	  = 
+myisam_max_sort_file_size =
+myisam_repair_threads	  =
+<% end %>
+
 #
 # * InnoDB
 #
@@ -112,6 +171,43 @@ max_binlog_size         = <%= node['mysql']['tunable']['max_binlog_size'] %>
 # You might want to disable InnoDB to shrink the mysqld process by circa 100MB.
 #skip-innodb
 innodb_buffer_pool_size = <%= node['mysql']['tunable']['innodb_buffer_pool_size'] %>
+
+<% if node['mysql']['tunable']['innodb_options'] %>
+
+innodb_buffer_pool_instances = 10
+innodb_buffer_pool_size = 22576M
+innodb_additional_mem_pool_size = 240M
+
+innodb_data_file_path = ibdata1:10M:autoextend
+-OR-
+innodb_file_per_table
+
+innodb_data_home_dir 
+innodb_write_io_threads = 8
+innodb_read_io_threads = 8
+
+# add this to the file, anyway
+# If you run into InnoDB tablespace corruption, setting this to a nonzero
+# value will likely help you to dump your tables. Start from value 1 and
+# increase it until you're able to dump the table successfully.
+#innodb_force_recovery=1
+
+innodb_thread_concurrency	=
+<% if node['mysql']['tunable']['innodb']['innodb_fast_shutdown'] %>
+innodb_fast_shutdown
+<% end %>
+innodb_log_buffer_size		=
+innodb_log_file_size		=
+innodb_log_files_in_group	=
+innodb_log_group_home_dir	=
+innodb_max_dirty_pages_pct	= 
+innodb_flush_method		=
+innodb_lock_wait_timeout	=
+innodb_flush_log_at_trx_commit	= 
+innodb_support_xa		= 
+innodb_file_format		=
+
+<% end %>
 
 <% if @skip_federated %>
 #
@@ -141,6 +237,7 @@ max_allowed_packet      = <%= node['mysql']['tunable']['max_allowed_packet'] %>
 
 [mysql]
 #no-auto-rehash # faster start of mysql but no tab completition
+default-character-set	=
 
 [isamchk]
 key_buffer              = <%= node['mysql']['tunable']['max_allowed_packet'] %>
@@ -174,3 +271,8 @@ old_passwords           = <%= node['mysql']['old_passwords'] %>
 #
 !includedir <%= node['mysql']['conf_dir'] %>/mysql/conf.d/
 <% end -%>
+
+<%# in case you're using xtrabackup for backup up InnoDB tables.
+<% if node['mysql]['xtrabackup']['target_dir'] %>
+target_dir = node['mysql]['xtrabackup']['target_dir']
+<% end %>
