@@ -30,9 +30,9 @@ attribute "mysql/data_dir",
   :description => "Location of mysql databases",
   :default => "/var/lib/mysql"
 
-attribute "mysql/port"
-  :display_name => "MySQL Port"
-  :description => "Port mysql listens on"
+attribute "mysql/port",
+  :display_name => "MySQL Port",
+  :description => "Port mysql listens on",
   :default => "3306"
 
 attribute "mysql/conf_dir",
