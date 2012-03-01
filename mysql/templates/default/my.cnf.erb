@@ -60,7 +60,7 @@ default_storage_engine = <%= node['mysql']['default_storage_engine'] %>
 <%# NB: You need to have HugeTLB configured for this option %>
 <% if node['mysql']['large_pages'] %>
 large-pages
-<% end %>
+<% end -%>
 
 #
 # Instead of skip-networking the default is now to listen only on
@@ -97,15 +97,15 @@ read_buffer_size	= <%= node['mysql']['tunable']['read_buffer_size'] %>
 sort_buffer_size	= <%= node['mysql']['tunable']['sort_buffer_size'] %>
 <% if node['mysql']['tunable']['join_buffer_size'] %>
 join_buffer_size	= <%= node['mysql']['tunable']['join_buffer_size'] %>
-<% end %>
+<% end -%>
 
 <% if node['mysql']['tunable']['memlock'] %>
 memlock 
-<% end %>
+<% end -%>
 transaction_isolation	= <%= node['mysql']['tunable']['transaction_isolation'] %>
 <% if node['mysql']['tunable']['tmp_table_size'] %>
 tmp_table_size		= <%= node['mysql']['tunable']['tmp_table_size'] %>
-<% end %>
+<% end -%>
 
 #
 # * Query Cache Configuration
@@ -139,19 +139,19 @@ max_binlog_size         = <%= node['mysql']['tunable']['max_binlog_size'] %>
 
 <% if node['mysql']['tunable']['log_slave_updates'] %>
 log_slave_updates
-<% end %>
+<% end -%>
 
 <% if node['mysql']['tunable']['log'] %>
 log
-<% end %>
+<% end -%>
 
 <% if node['mysql']['tunable']['log_warnings'] %>
 log_warnings
-<% end %>
+<% end -%>
 
 <% if node['mysql']['tunable']['slow_query_log'] || node['mysql']['tunable']['log_slow_queries'] %>
 slow_query_log
-<% end %>
+<% end -%>
 
 #binlog_do_db           = include_database_name
 #binlog_ignore_db       = include_database_name
@@ -163,7 +163,7 @@ bulk_insert_buffer_size	  = <%= node['mysql']['tunable']['myisam']['bulk_insert_
 myisam_sort_buffer_size	  = <%= node['mysql']['tunable']['myisam']['myisam_sort_buffer_size'] %>
 myisam_max_sort_file_size = <%= node['mysql']['tunable']['myisam']['myisam_max_sort_file_size'] %>
 myisam_repair_threads	  = <%= node['mysql']['tunable']['myisam']['myisam_repair_threads'] %>
-<% end %>
+<% end -%>
 
 #
 # * InnoDB
@@ -183,11 +183,11 @@ innodb_additional_mem_pool_size = <%= node['mysql']['tunable']['innodb']['innodb
 innodb_file_per_table
 <% else %>
 innodb_data_file_path = ibdata1:10M:autoextend
-<% end %>
+<% end -%>
 
 <% if node['mysql']['tunable']['innodb']['innodb_data_home_dir'] %>
 innodb_data_home_dir = <%= node['mysql']['tunable']['innodb']['innodb_data_home_dir'] %>
-<% end %>
+<% end -%>
 
 # add this to the file, anyway
 # If you run into InnoDB tablespace corruption, setting this to a nonzero
@@ -198,7 +198,7 @@ innodb_data_home_dir = <%= node['mysql']['tunable']['innodb']['innodb_data_home_
 innodb_thread_concurrency	= <%= node['mysql']['tunable']['innodb']['innodb_thread_concurrency'] %>
 <% if node['mysql']['tunable']['innodb']['innodb_fast_shutdown'] %>
 innodb_fast_shutdown
-<% end %>
+<% end -%>
 innodb_log_buffer_size		= <%= node['mysql']['tunable']['innodb']['innodb_log_buffer_size'] %>
 innodb_log_file_size		= <%= node['mysql']['tunable']['innodb']['innodb_log_file_size'] %>
 innodb_log_files_in_group	= <%= node['mysql']['tunable']['innodb']['innodb_log_files_in_group'] %>
@@ -210,7 +210,7 @@ innodb_flush_log_at_trx_commit	= <%= node['mysql']['tunable']['innodb']['innodb_
 innodb_support_xa		= <%= node['mysql']['tunable']['innodb']['innodb_support_xa'] %>
 innodb_file_format		= <%= node['mysql']['tunable']['innodb']['innodb_file_format'] %>
 
-<% end %>
+<% end -%>
 
 <% if @skip_federated %>
 #
@@ -220,7 +220,7 @@ innodb_file_format		= <%= node['mysql']['tunable']['innodb']['innodb_file_format
 # shipped with MySQL distributions (my-huge.cnf, my-medium.cnf, and so forth).
 #
 skip-federated
-<% end %>
+<% end -%>
 #
 # * Security Features
 #
@@ -275,7 +275,7 @@ old_passwords           = <%= node['mysql']['old_passwords'] %>
 !includedir <%= node['mysql']['conf_dir'] %>/mysql/conf.d/
 <% end -%>
 
-<%# in case you're using xtrabackup for backup up InnoDB tables.
-<% if node['mysql]['xtrabackup']['target_dir'] %>
-target_dir = node['mysql]['xtrabackup']['target_dir']
-<% end %>
+<%# in case you're using xtrabackup for backup up InnoDB tables. %>
+<% if node['mysql']['xtrabackup']['target_dir'] %>
+target_dir = <% node['mysql']['xtrabackup']['target_dir'] %>
+<% end -%>
