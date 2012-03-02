@@ -19,19 +19,56 @@
 
 # Include Opscode helper in Recipe class to get access
 # to debian_before_squeeze? and ubuntu_before_lucid?
+
+# For percona stuff, we need the percona repos
+# borrowing liberally from the percona cookbook
+case node['platform']
+  when "centos", "redhat", "suse", "fedora", "scientific", "amazon"
+
+  when "ubuntu","debian"
+    include_recipe "apt"
+
+    execute "add percona key to gpg" do
+      command "gpg --keyserver keys.gnupg.net --homedir /root " +
+	"--recv-keys #{node['mysql']['percona']['key_id']}"
+      not_if "gpg --list-keys #{node['mysql']['percona']['key_id']}"
+    end
+
+    execute "add percona key to apt" do
+      command "gpg --homedir /root --armor " +
+	"--export #{node['mysql']['percona']['key_id']} | apt-key add -"
+      not_if "apt-get key list #{node['mysql']['percona']['key_id']}"
+    end
+
+    apt_repository "percona" do
+      distro = case node['platform']
+	when "debian"
+	  (node[:platform_version].to_i == 5) ? "lenny" : "squeeze"
+	when "ubuntu"
+	  # TODO: hammer out how the fuck best to get this for ubuntu
+	end
+      uri "http://repo.percona.com/apt"
+      distribution distro
+      components [ "main" ]
+      key node['mysql']['percona']['key_id']
+      action :add
+    end
+
+end
+
 ::Chef::Recipe.send(:include, Opscode::Mysql::Helpers)
 
 mysql_packages = case node['platform']
 when "centos", "redhat", "suse", "fedora", "scientific", "amazon"
-  %w{Percona-Server-client Percona-Server-devel}
+  %w{Percona-Server-client-55 Percona-Server-devel}
 when "ubuntu","debian"
   if debian_before_squeeze? || ubuntu_before_lucid?
-    %w{percona-server-client libmysqlclient15-dev}
+    %w{percona-server-client-5.5 libmysqlclient15-dev}
   else
-    %w{percona-server-client libmysqlclient-dev}
+    %w{percona-server-client-5.5 libmysqlclient-dev}
   end
 else
-  %w{percona-server-client libmysqlclient-dev}
+  %w{percona-server-client-5.5 libmysqlclient-dev}
 end
 
 mysql_packages.each do |mysql_pack|

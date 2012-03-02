@@ -20,8 +20,16 @@
 ::Chef::Recipe.send(:include, Opscode::OpenSSL::Password)
 
 include_recipe "mysql::percona_client"
-include_attribute "general"
-include_attribute "percona_server"
+#include_attribute "mysql::general"
+#include_attribute "mysql::percona_server"
+
+# Hrm, this may need split out or something. For now:
+ruby_block 'load_percona_rules' do
+  block do
+    node.load_attribute_by_short_filename('general', 'percona_server')
+  end
+  action :nothing
+end
 
 # generate all passwords
 node.set_unless['mysql']['server_debian_password'] = secure_password
@@ -82,7 +90,7 @@ service "mysql" do
 end
 
 skip_federated = case node['platform']
-                 when 'fedora', 'ubuntu', 'amazon'
+                 when 'fedora', 'ubuntu', 'amazon', 'debian'
                    true
                  when 'centos', 'redhat', 'scientific'
                    node['platform_version'].to_f < 6.0

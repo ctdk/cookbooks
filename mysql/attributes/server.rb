@@ -17,6 +17,8 @@
 # limitations under the License.
 #
 
+include_attribute "mysql::general"
+
 case node["platform"]
 when "centos", "redhat", "fedora", "suse", "scientific", "amazon"
   default['mysql']['package_name']            = "mysql-server"

@@ -276,6 +276,6 @@ old_passwords           = <%= node['mysql']['old_passwords'] %>
 <% end -%>
 
 <%# in case you're using xtrabackup for backup up InnoDB tables. %>
-<% if node['mysql']['xtrabackup']['target_dir'] %>
-target_dir = <% node['mysql']['xtrabackup']['target_dir'] %>
+<% if node['mysql']['xtrabackup'] && node['mysql']['xtrabackup']['target_dir'] %>
+target_dir = <%= node['mysql']['xtrabackup']['target_dir'] %>
 <% end -%>

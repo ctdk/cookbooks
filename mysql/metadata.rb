@@ -60,6 +60,15 @@ attribute "mysql/tunable/innodb",
   :description => "Hash of MySQL tunable attributes specific to InnoDB",
   :type => "hash"
 
+attribute "mysql/percona",
+  :display_name => "Percona",
+  :description => "Hash of Percona specific options",
+  :type => "hash"
+
+attribute "mysql/percona/key_id",
+  :display_name => "Percona apt repo GPG key id",
+  :default => "1C4CBDCDCD2EFD2A"
+
 attribute "mysql/tunable/key_buffer",
   :display_name => "MySQL Tuntable Key Buffer",
   :default => "250M"

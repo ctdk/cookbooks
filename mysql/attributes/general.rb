@@ -76,3 +76,4 @@ default['mysql']['tunable']['transaction_isolation'] = "REPEATABLE-READ"
 default['mysql']['tunable']['log_bin']		    = "mysql-log"
 default['mysql']['tunable']['binlog_format']	    = "mixed"
 default['mysql']['tunable']['slow_query_log']	    = true
+default['mysql']['percona']['key_id']		    = "1C4CBDCDCD2EFD2A"

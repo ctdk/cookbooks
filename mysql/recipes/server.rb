@@ -20,8 +20,8 @@
 ::Chef::Recipe.send(:include, Opscode::OpenSSL::Password)
 
 include_recipe "mysql::client"
-include_attribute "general"
-include_attribute "server"
+#include_attribute "mysql::general"
+#include_attribute "mysql::server"
 
 # generate all passwords
 node.set_unless['mysql']['server_debian_password'] = secure_password
